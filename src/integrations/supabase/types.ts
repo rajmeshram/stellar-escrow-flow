@@ -14,16 +14,180 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      audit_logs: {
+        Row: {
+          actor_address: string | null
+          contract_id: string
+          created_at: string
+          event: string
+          id: string
+          metadata: Json
+        }
+        Insert: {
+          actor_address?: string | null
+          contract_id: string
+          created_at?: string
+          event: string
+          id?: string
+          metadata?: Json
+        }
+        Update: {
+          actor_address?: string | null
+          contract_id?: string
+          created_at?: string
+          event?: string
+          id?: string
+          metadata?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_contract_id_fkey"
+            columns: ["contract_id"]
+            isOneToOne: false
+            referencedRelation: "escrow_contracts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      escrow_contracts: {
+        Row: {
+          asset: Database["public"]["Enums"]["asset_type"]
+          client_address: string
+          created_at: string
+          creator_address: string
+          description: string | null
+          funding_tx_hash: string | null
+          id: string
+          network: Database["public"]["Enums"]["network_type"]
+          owner_id: string
+          soroban_contract_id: string | null
+          status: Database["public"]["Enums"]["escrow_status"]
+          title: string
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          asset?: Database["public"]["Enums"]["asset_type"]
+          client_address: string
+          created_at?: string
+          creator_address: string
+          description?: string | null
+          funding_tx_hash?: string | null
+          id?: string
+          network?: Database["public"]["Enums"]["network_type"]
+          owner_id: string
+          soroban_contract_id?: string | null
+          status?: Database["public"]["Enums"]["escrow_status"]
+          title: string
+          total_amount: number
+          updated_at?: string
+        }
+        Update: {
+          asset?: Database["public"]["Enums"]["asset_type"]
+          client_address?: string
+          created_at?: string
+          creator_address?: string
+          description?: string | null
+          funding_tx_hash?: string | null
+          id?: string
+          network?: Database["public"]["Enums"]["network_type"]
+          owner_id?: string
+          soroban_contract_id?: string | null
+          status?: Database["public"]["Enums"]["escrow_status"]
+          title?: string
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      milestones: {
+        Row: {
+          amount: number
+          contract_id: string
+          created_at: string
+          id: string
+          order_index: number
+          release_tx_hash: string | null
+          released_at: string | null
+          status: Database["public"]["Enums"]["milestone_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          contract_id: string
+          created_at?: string
+          id?: string
+          order_index: number
+          release_tx_hash?: string | null
+          released_at?: string | null
+          status?: Database["public"]["Enums"]["milestone_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          contract_id?: string
+          created_at?: string
+          id?: string
+          order_index?: number
+          release_tx_hash?: string | null
+          released_at?: string | null
+          status?: Database["public"]["Enums"]["milestone_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "milestones_contract_id_fkey"
+            columns: ["contract_id"]
+            isOneToOne: false
+            referencedRelation: "escrow_contracts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          id: string
+          stellar_pubkey: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          id: string
+          stellar_pubkey?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          stellar_pubkey?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      current_stellar_pubkey: { Args: never; Returns: string }
     }
     Enums: {
-      [_ in never]: never
+      asset_type: "XLM" | "USDC"
+      escrow_status:
+        | "draft"
+        | "funded"
+        | "in_progress"
+        | "completed"
+        | "cancelled"
+      milestone_status: "pending" | "approved" | "released"
+      network_type: "testnet" | "mainnet"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +314,17 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      asset_type: ["XLM", "USDC"],
+      escrow_status: [
+        "draft",
+        "funded",
+        "in_progress",
+        "completed",
+        "cancelled",
+      ],
+      milestone_status: ["pending", "approved", "released"],
+      network_type: ["testnet", "mainnet"],
+    },
   },
 } as const
